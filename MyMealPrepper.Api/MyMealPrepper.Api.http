@@ -1,0 +1,6 @@
+@MyMealPrepper.Api_HostAddress = http://localhost:5151
+
+GET {{MyMealPrepper.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
