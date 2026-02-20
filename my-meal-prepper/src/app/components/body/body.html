@@ -1,0 +1,57 @@
+<div class="upper-body-div">
+  <button class="btn btn-info export-btn">Export</button>
+</div>
+<div class="container my-4">
+  <button class="btn btn-success generate-btn">Generate meals!</button>
+  <div class="main-btn-div d-flex align-items-center mb-3">
+      <input type="checkbox" id="start-from-today" 
+       [checked]="startFromToday()"
+       (change)="startFromToday.set($any($event.target).checked)">
+      <label for="start-from-today" class="form-check-label me-3">
+        Start from today
+      </label>
+    <select id="range-selecter" 
+            class="form-control form-select w-auto me-2 week-range-options" 
+            [(ngModel)]="selectedWeekRange">
+        @for(option of weekRangeOptions; track $index){
+          <option [value]="option">{{ option }}</option>
+        }
+    </select>
+    <select id="meal-type-selecter" 
+            class="form-control form-select w-auto me-2 meal-type-options btn-left-margin" 
+            [(ngModel)]="selectedMealTypeOptions">
+        @for(option of mealOptions; track $index){
+          <option [value]="option">{{ option }}</option>
+        }
+    </select>    
+  </div>
+  @for(week of weekDaysWithDates(); track $index){
+    <div class="week-grid mb-4">
+
+    @for(dayObj of week; track dayObj){
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">
+            {{ dayObj.day }} - {{ dayObj.date }}
+          </h5>
+
+          @for(meal of meals; track $index){
+            @if(selectedMealTypeOptions() === 'All' || selectedMealTypeOptions() === meal){
+              <label class="meal-type-label">{{ meal }}</label>
+              <input 
+                type="text" 
+                class="form-control mb-2" 
+                [value]="'Not selected'" 
+                (focus)="onFocus($event)"
+              >
+            }
+          }
+
+        </div>
+      </div>
+    }
+
+  </div>
+
+}
+</div>

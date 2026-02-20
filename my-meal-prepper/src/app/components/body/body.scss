@@ -1,0 +1,41 @@
+.upper-body-div {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10em;
+}
+
+.export-btn {
+    float: right;
+}
+
+.main-btn-div {
+    margin-bottom: 1em;
+}
+
+.generate-btn{
+    margin-bottom: 1em;
+}
+
+.meal-type-options {
+    cursor: pointer;
+}
+
+.week-range-options {
+    cursor: pointer;
+}
+
+.meal-type-label {
+    font-weight: bold;
+    display: block;
+    margin-top: 0.5em;
+}
+
+.btn-left-margin {
+    margin-left: 4em;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+}
