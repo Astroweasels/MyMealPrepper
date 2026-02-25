@@ -1,0 +1,18 @@
+<div class="modal-backdrop" (click)="closed.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h4>{{ meal.mealType }} {{ meal.day }} - {{ meal.date }}</h4>
+    <label for="recipe-name-input">Recipe Name</label>
+    <input id="recipe-name-input" class="form-control" [(ngModel)]="meal.title" />
+    <br>
+    <label for="instruction-text-area">Instructions</label>
+    <textarea id="instruction-text-area" class="form-control" [(ngModel)]="meal.instructions"></textarea>
+    <br>
+    <label for="ingredient-text-area">Ingredients (This will update your grocery list)</label>
+    <textarea id="ingredient-text-area" [(ngModel)]="ingredientsText" class="form-control" (paste)="onPasteIngredients($event)" placeholder="Paste ingredients here"></textarea>
+    <br>
+    <div id="edit-meal-modal-footer">
+        <button id="save-meal-edit-btn" class="btn btn-success" (click)="saveMeal()">Save</button>
+        <button id="close-meal-edit-btn" class="btn btn-danger" (click)="closed.emit()">Cancel</button>
+    </div>
+  </div>
+</div>
