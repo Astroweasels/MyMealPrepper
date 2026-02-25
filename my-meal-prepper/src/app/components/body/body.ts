@@ -52,12 +52,8 @@ async generateMeals() {
   days.forEach(dayObj => {
     const key = `${dayObj.day}-${dayObj.date}`;
     const existingMeals = generated[key] || [];
-
-    // Only generate meals for selected meal types
     const selectedTypes = this.selectedMealTypes();
     const count = selectedTypes.length;
-
-    // Shuffle once per day for uniqueness
     const shuffled = this.shuffle([...mealsToUse]);
     const pickedMeals: FullMeal[] = [];
     const usedTitles = new Set(existingMeals.map(m => m.title));
@@ -72,18 +68,14 @@ async generateMeals() {
       i++;
     }
 
-    // Map picked meals only to selected meal types
-    const newDayMeals: EditableMeal[] = selectedTypes.map((mealType, index) => {
+      const newDayMeals: EditableMeal[] = selectedTypes.map((mealType, index) => {
       const m = pickedMeals[index];
-
-      // If user already filled it, keep the existing
       const existing = existingMeals.find(em => em.mealType === mealType);
       if (existing && existing.title && existing.title !== 'Not selected') {
         return existing;
       }
 
       if (!m) {
-        // fallback if no meal available
         return {
           day: dayObj.day,
           date: dayObj.date,
@@ -116,7 +108,6 @@ async generateMeals() {
       };
     });
 
-    // Merge with any existing meals that aren't in selectedTypes
     const updatedMeals = [
       ...existingMeals.filter(m => !selectedTypes.includes(m.mealType)),
       ...newDayMeals
@@ -126,8 +117,6 @@ async generateMeals() {
   });
 
   this.generatedMeals.set(generated);
-
-  // 🔹 Update grocery list immediately
   this.buildGroceryList();
 }
 
@@ -354,23 +343,6 @@ print(options: {
   setTimeout(() => window.print());
 }
 
-// printMeal(dayObj: any, mealType: string) {
-//   const meal = this.getMealFromDayAndType(dayObj, mealType);
-//   this.selectedMealForPrint.set(meal);
-//   document.body.classList.add('printing');
-//   document.body.setAttribute('data-print', 'meal');
-
-//   const cleanup = () => {
-//     document.body.classList.remove('printing');
-//     document.body.removeAttribute('data-print');
-//     this.selectedMealForPrint.set(null);
-//     window.removeEventListener('afterprint', cleanup);
-//   };
-
-//   window.addEventListener('afterprint', cleanup);
-//   setTimeout(() => window.print());
-// }
-
 printMeal(dayObj: any, mealType: string) {
   const meal = this.getMealFromDayAndType(dayObj, mealType);
   if (!meal) return;
@@ -379,11 +351,8 @@ printMeal(dayObj: any, mealType: string) {
   if (!popup) return;
 
   popup.document.title = meal.title;
-
-  // Clear body
   popup.document.body.innerHTML = '';
 
-  // Add styles
   const style = popup.document.createElement('style');
   style.textContent = `
     body { font-family: Arial; padding: 20px; }
@@ -393,17 +362,14 @@ printMeal(dayObj: any, mealType: string) {
   `;
   popup.document.head.appendChild(style);
 
-  // Title
   const h1 = popup.document.createElement('h1');
   h1.textContent = meal.title;
   popup.document.body.appendChild(h1);
 
-  // Ingredients header
   const h3Ingredients = popup.document.createElement('h3');
   h3Ingredients.textContent = 'Ingredients';
   popup.document.body.appendChild(h3Ingredients);
 
-  // Ingredients list
   const ul = popup.document.createElement('ul');
   meal.ingredients.forEach(i => {
     const li = popup.document.createElement('li');
@@ -412,31 +378,13 @@ printMeal(dayObj: any, mealType: string) {
   });
   popup.document.body.appendChild(ul);
 
-  // Instructions header
   const h3Instructions = popup.document.createElement('h3');
   h3Instructions.textContent = 'Instructions';
   popup.document.body.appendChild(h3Instructions);
 
-  // Instructions paragraph
   const p = popup.document.createElement('p');
   p.textContent = meal.instructions ?? '';
   popup.document.body.appendChild(p);
-
-  // Buttons container
-  // const buttonContainer = popup.document.createElement('div');
-
-  // const printBtn = popup.document.createElement('button');
-  // printBtn.textContent = 'Print';
-  // printBtn.onclick = () => popup.print();
-
-  // const cancelBtn = popup.document.createElement('button');
-  // cancelBtn.textContent = 'Cancel';
-  // cancelBtn.onclick = () => popup.close();
-
-  // buttonContainer.appendChild(printBtn);
-  // buttonContainer.appendChild(cancelBtn);
-
-  // popup.document.body.appendChild(buttonContainer);
 
   setTimeout(() => {
   popup.print();
@@ -451,19 +399,16 @@ printFullPlan() {
   popup.document.title = 'Meal Plan';
   popup.document.body.innerHTML = '';
 
-  // Clone source content
   const calendarSource = document.querySelector('.print-calendar');
   const grocerySource = document.querySelector('.print-grocery');
 
   const cleanCalendar = calendarSource?.cloneNode(true) as HTMLElement | null;
   const cleanGrocery = grocerySource?.cloneNode(true) as HTMLElement | null;
 
-  // Remove print icons
   cleanCalendar?.querySelectorAll('.print-icon').forEach(el => el.remove());
   cleanCalendar?.querySelectorAll('.re-roll-icon').forEach(el => el.remove());
   cleanGrocery?.querySelectorAll('.print-icon').forEach(el => el.remove());
 
-  // Styles
   const style = popup.document.createElement('style');
   style.textContent = `
     body {
@@ -531,12 +476,10 @@ printFullPlan() {
   `;
   popup.document.head.appendChild(style);
 
-  // Main Title
   const h1 = popup.document.createElement('h1');
   h1.textContent = 'Meal Plan';
   popup.document.body.appendChild(h1);
 
-  // === Calendar Section (Page 1) ===
   const calendarSection = popup.document.createElement('div');
   calendarSection.className = 'print-section';
 
@@ -546,7 +489,6 @@ printFullPlan() {
 
   popup.document.body.appendChild(calendarSection);
 
-  // === Grocery Section (Page 2) ===
 if (cleanGrocery && cleanGrocery.textContent?.trim()) {
     const grocerySection = popup.document.createElement('div');
     grocerySection.className = 'print-section';
@@ -558,7 +500,7 @@ if (cleanGrocery && cleanGrocery.textContent?.trim()) {
     grocerySection.appendChild(cleanGrocery);
     popup.document.body.appendChild(grocerySection);
   }
-  // Print automatically
+
   setTimeout(() => {
     popup.print();
     popup.close();
@@ -597,17 +539,12 @@ if (cleanGrocery && cleanGrocery.textContent?.trim()) {
 
   if (index === -1) return;
 
-  // Current meals for the day
   const currentMeals = this.generatedMeals()[key] || [];
-
-  // Pool of available meals from MealService
   const availableMeals = this.mealService.getRandomMeals(this.meals.length * 2); 
   if (!availableMeals.length) return;
 
-  // Avoid picking the same meal that's already in the day's meals
   const usedTitles = new Set(currentMeals.map(m => m.title));
 
-  // Pick a new meal
   let newMeal: FullMeal | null = null;
   for (const candidate of availableMeals) {
     if (!usedTitles.has(candidate.strMeal)) {
@@ -618,7 +555,6 @@ if (cleanGrocery && cleanGrocery.textContent?.trim()) {
 
   if (!newMeal) return;
 
-  // Build the EditableMeal
   const ingredients = [];
   for (let j = 1; j <= 20; j++) {
     const name = newMeal[`strIngredient${j}`];
@@ -637,10 +573,9 @@ if (cleanGrocery && cleanGrocery.textContent?.trim()) {
     ingredients
   };
 
-  // Update the day’s meals
+
   const updatedDayMeals = [...currentMeals];
   updatedDayMeals[index] = updatedMeal;
-
   const updatedGenerated = { ...this.generatedMeals() };
   updatedGenerated[key] = updatedDayMeals;
   this.generatedMeals.set(updatedGenerated);
