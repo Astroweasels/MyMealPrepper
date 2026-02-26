@@ -1,12 +1,3 @@
-// ...existing code...
-
-export class Body {
-    // ...existing code...
-
-    // Returns true if any meal is selected for a given day
-    isAnyMealSelectedForDay(dayObj: any): boolean {
-      return this.meals.some(meal => this.isMealSelected(dayObj, meal));
-    }
 import { Component, computed, signal, ViewChildren, QueryList, ElementRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +14,10 @@ import { EditableMeal } from '../../models/editable-meal.model';
 })
 
 export class Body {
+        // Returns true if any meal is selected for a given day
+        isAnyMealSelectedForDay(dayObj: any): boolean {
+          return this.meals.some((meal: string) => this.isMealSelected(dayObj, meal));
+        }
     // Selection state for meal cards
     selectedMealsState = signal<{ day: string; date: string; mealType: string }[]>([]);
     // Check if meal is selected
