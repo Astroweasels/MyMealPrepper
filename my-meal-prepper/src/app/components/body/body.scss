@@ -1,3 +1,17 @@
+@media print and (max-width: 600px) {
+    body *:not(#mobile-print-container):not(#mobile-print-container *) {
+        display: none !important;
+    }
+    #mobile-print-container {
+        display: block !important;
+        width: 100vw;
+        background: white;
+        color: black;
+        position: static !important;
+        box-sizing: border-box;
+        padding: 1rem;
+    }
+}
 .meal-label-icon-wrap {
     display: flex;
     align-items: center;
