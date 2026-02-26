@@ -74,20 +74,22 @@
             @for(meal of meals; track $index){
               @if(selectedMealTypes().includes(meal)){
                 <div>
-                  <div class="flex-area">
+                  <div>
                     <label id="meal-label-{{ meal }}" class="meal-type-label">{{ meal }}</label>
-                    <button
-                      class="print-icon"
-                      (click)="printMeal(dayObj, meal)"
-                      title="Print recipe">
-                      🖨
-                    </button>
-                    <button
-                      class="re-roll-icon"
-                      (click)="rerollMeal(dayObj, meal)"
-                      title="Pick a different random meal">
-                      🔄
-                    </button>
+                    <div class="flex-area" style="margin-top: 0.25rem;">
+                      <button
+                        class="print-icon"
+                        (click)="printMeal(dayObj, meal)"
+                        title="Print recipe">
+                        🖨
+                      </button>
+                      <button
+                        class="re-roll-icon"
+                        (click)="rerollMeal(dayObj, meal)"
+                        title="Pick a different random meal">
+                        🔄
+                      </button>
+                    </div>
                   </div>
                   <div
                     class="meal-display clickable"
