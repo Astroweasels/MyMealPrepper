@@ -15,4 +15,10 @@ export const routes: Routes = [
   path: 'body',
   loadComponent: () =>
     import('./components/body/body').then(m => m.Body)
-}];
+},
+{
+  path: 'how-it-works',
+  loadComponent: () =>
+    import('./components/how-it-works/how-it-works').then(m => m.HowItWorks)
+}
+];

@@ -1,4 +1,4 @@
-  showIngredientAmounts = signal(true);
+// ...existing code...
 import { Component, computed, signal, ViewChildren, QueryList, ElementRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { EditableMeal } from '../../models/editable-meal.model';
 })
 
 export class Body {
+  showIngredientAmounts = signal(true);
         // Returns true if any meal is selected for a given day
         isAnyMealSelectedForDay(dayObj: any): boolean {
           return this.meals.some((meal: string) => this.isMealSelected(dayObj, meal));
