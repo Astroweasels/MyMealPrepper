@@ -8,10 +8,20 @@
 }
 
 .modal-content {
-    background: white;
-    width: 400px;
-    margin: 100px auto;
-    padding: 20px;
+        background: white;
+        width: 400px;
+        margin: 100px auto;
+        padding: 20px;
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        width: 95vw;
+        min-width: 0;
+        padding: 10px;
+        margin: 30px auto;
+        border-radius: 10px;
+    }
 }
 
 #save-meal-edit-btn {
