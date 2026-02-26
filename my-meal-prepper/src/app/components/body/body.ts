@@ -125,7 +125,14 @@ export class Body {
         closeBtn.textContent = 'Close';
         closeBtn.className = 'close-btn';
         closeBtn.onclick = () => popup.close();
+        // Add inline style to hide button during print
+        closeBtn.style.setProperty('display', 'block');
+        closeBtn.style.setProperty('@media print', 'display: none !important');
         popup.document.body.appendChild(closeBtn);
+        // Also add a print-specific style tag
+        const printHideStyle = popup.document.createElement('style');
+        printHideStyle.textContent = '@media print { .close-btn { display: none !important; } }';
+        popup.document.head.appendChild(printHideStyle);
         setTimeout(() => { popup.print(); }, 300);
       } else {
         setTimeout(() => { popup.print(); popup.close(); }, 300);
