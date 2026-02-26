@@ -1,3 +1,8 @@
+@media print {
+    .close-btn {
+        display: none !important;
+    }
+}
 // Ensure each week prints on its own page
 @media print {
     .print-section {
