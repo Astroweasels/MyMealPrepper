@@ -504,7 +504,7 @@ printMeal(dayObj: any, mealType: string) {
   }
 }
 
-printFullPlan() {
+printFullPlan(includeGrocery: boolean = true) {
   const isMobile = window.matchMedia('(max-width: 600px)').matches;
   const popup = window.open('', '_blank', isMobile ? undefined : 'width=1000,height=800');
   if (!popup) return;
@@ -678,9 +678,9 @@ printFullPlan() {
   }
   wrapper.appendChild(calendarSection);
 
-  if (cleanGrocery && cleanGrocery.textContent?.trim()) {
+  if (includeGrocery && cleanGrocery && cleanGrocery.textContent?.trim()) {
     const grocerySection = popup.document.createElement('div');
-    grocerySection.className = 'grocery-section';
+    grocerySection.className = 'grocery-section print-section'; // print-section for page break
     const h2 = popup.document.createElement('h2');
     h2.textContent = 'Grocery List';
     grocerySection.appendChild(h2);
