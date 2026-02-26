@@ -21,7 +21,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
           cache-dependency-path: my-meal-prepper/package-lock.json
 
@@ -30,7 +30,7 @@ jobs:
         working-directory: ./my-meal-prepper
 
       - name: Build Angular app
-        run: npm run build -- --configuration production --verbose
+        run: npm run build -- --configuration production
         working-directory: ./my-meal-prepper
 
       - name: Configure AWS credentials
@@ -46,5 +46,3 @@ jobs:
             --delete \
             --acl public-read \
             --cache-control "max-age=0,no-cache,no-store,must-revalidate"
-
-        
