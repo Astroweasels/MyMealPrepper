@@ -71,7 +71,7 @@
     @for(week of weekDaysWithDates(); track $index) {
       <div class="week-grid mb-4 print-section">
       @for(dayObj of week; track dayObj){
-        <div id="{{ dayObj.day }}-{{ dayObj.date }}" class="card h-100 meal-card" [class.selected]="meals.some(meal => isMealSelected(dayObj, meal))">
+        <div id="{{ dayObj.day }}-{{ dayObj.date }}" class="card h-100 meal-card" [class.selected]="isAnyMealSelectedForDay(dayObj)">
           <div class="card-body">
             <h5 class="card-title">
               {{ dayObj.day }} - {{ dayObj.date }}

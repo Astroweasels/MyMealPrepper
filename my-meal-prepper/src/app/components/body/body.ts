@@ -1,3 +1,7 @@
+  // Returns true if any meal is selected for a given day
+  isAnyMealSelectedForDay(dayObj: any): boolean {
+    return this.meals.some(meal => this.isMealSelected(dayObj, meal));
+  }
 import { Component, computed, signal, ViewChildren, QueryList, ElementRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
