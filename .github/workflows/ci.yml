@@ -26,9 +26,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: ./my-meal-prepper
 
       - name: Build Angular app
         run: npm run build -- --configuration production
+        working-directory: ./my-meal-prepper
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -39,7 +41,7 @@ jobs:
 
       - name: Sync Angular build to S3
         run: |
-          aws s3 sync ./dist/my-meal-prepper/browser s3://my-angular-meal-planner \
+          aws s3 sync ./my-meal-prepper/dist/my-meal-prepper/browser s3://my-angular-meal-planner \
             --delete \
             --acl public-read \
             --cache-control "max-age=0,no-cache,no-store,must-revalidate"
