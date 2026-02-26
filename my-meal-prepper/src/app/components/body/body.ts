@@ -669,6 +669,13 @@ printFullPlan() {
   const calendarSection = popup.document.createElement('div');
   calendarSection.className = 'calendar-section';
   if (cleanCalendar) calendarSection.appendChild(cleanCalendar);
+  // Add page breaks after each week if possible
+  if (calendarSection.querySelectorAll('.week-grid').length > 1) {
+    const weekGrids = calendarSection.querySelectorAll('.week-grid');
+    weekGrids.forEach((grid, idx) => {
+      grid.classList.add('print-section');
+    });
+  }
   wrapper.appendChild(calendarSection);
 
   if (cleanGrocery && cleanGrocery.textContent?.trim()) {
