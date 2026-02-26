@@ -1,3 +1,4 @@
+  showIngredientAmounts = signal(true);
 import { Component, computed, signal, ViewChildren, QueryList, ElementRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -355,12 +356,18 @@ async generateMeals() {
 
   buildGroceryList() {
     const ingredientMap = new Map<string, string>();
+    const waterRegex = /water|cold water|boiling water|ice water/i;
 
     Object.values(this.generatedMeals()).forEach(dayMeals => {
       dayMeals.forEach(meal => {
         meal.ingredients.forEach(i => {
+          if (!i.name || waterRegex.test(i.name)) return;
           const key = i.name.toLowerCase();
-          ingredientMap.set(key, `${i.amount ?? ''} ${i.name}`.trim());
+          if (this.showIngredientAmounts()) {
+            ingredientMap.set(key, `${i.amount ?? ''} ${i.name}`.trim());
+          } else {
+            ingredientMap.set(key, i.name.trim());
+          }
         });
       });
     });

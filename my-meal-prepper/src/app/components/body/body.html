@@ -1,17 +1,6 @@
 <div class="container my-4">
   <!-- Hidden print container for mobile printing -->
   <div id="mobile-print-container" style="display:none;"></div>
-  <div class="card border-info mb-4 shadow-sm">
-    <div class="card-header bg-info text-white">
-      How It Works
-    </div>
-    <div class="card-body">
-      <ul class="mb-0">
-        <li>Click any meal to edit ingredients or instructions.</li>
-        <li>Click <strong>Generate random meals</strong> to fill the rest. If you don't like a meal, click the re-roll icon to generate a new one.</li>
-      </ul>
-    </div>
-  </div>
 </div>
 <div class="controls-card shadow-sm mb-4 print-wrapper">
   <div class="controls-header">
@@ -121,9 +110,17 @@
 
   <hr class="my-4" />
   <h4>
-    Grocery List (Version 2 will come later with a more helpful list)
-    <p>Click on the list to edit it manually.</p>
+    Grocery List
   </h4>
+  <div class="grocery-toggle-row">
+    <label class="grocery-toggle-label" for="grocery-amount-toggle">Show measurements?</label>
+    <input id="grocery-amount-toggle" type="checkbox"
+      [checked]="showIngredientAmounts()"
+      (change)="showIngredientAmounts.set($any($event.target).checked); buildGroceryList();"
+      class="grocery-toggle-checkbox"
+    />
+  </div>
+  <p class="grocery-list-info">Click on the list to edit it manually.</p>
 
   @if(!editingGroceries()) {
     <div class="grocery-display print-grocery" (click)="editingGroceries.set(true)">

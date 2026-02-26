@@ -1,0 +1,11 @@
+.how-it-works-card {
+	border-radius: 14px;
+	padding: 1.5rem;
+	background: #f9fbfd;
+}
+
+@media (max-width: 600px) {
+	.how-it-works-card {
+		padding: 0.75rem;
+	}
+}
