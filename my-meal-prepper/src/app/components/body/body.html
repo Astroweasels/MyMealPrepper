@@ -31,6 +31,11 @@
       <button class="btn btn-primary print-btn" (click)="printFullPlan(true)">
         Print All
       </button>
+      @if(selectedMeals().length > 0) {
+        <button class="btn btn-warning print-btn" (click)="printSelectedRecipes()">
+          Print Selected Recipes
+        </button>
+      }
     </div>
   </div>
   <hr />
@@ -115,19 +120,10 @@
             }
           </div>
         </div>
-      @if(selectedMeals().length > 0) {
-        <div class="print-selected-recipes-btn-wrap">
-          <button class="btn btn-warning print-btn" (click)="printSelectedRecipes()">
-            Print Selected Recipes
-          </button>
-        </div>
-      }
       }
     </div>
-  }
-</div>
 
-</div>
+  }
 
   <hr class="my-4" />
   <h4>Grocery List (Version 2 will come later with a more helpful list)</h4>
