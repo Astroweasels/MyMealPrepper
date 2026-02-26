@@ -348,55 +348,30 @@ printMeal(dayObj: any, mealType: string) {
   if (!meal) return;
 
   const isMobile = window.matchMedia('(max-width: 600px)').matches;
-  if (isMobile) {
-    const printDiv = document.getElementById('mobile-print-container');
-    if (!printDiv) return;
-    printDiv.innerHTML = '';
-    const h1 = document.createElement('h1');
-    h1.textContent = meal.title;
-    printDiv.appendChild(h1);
-    const h3Ingredients = document.createElement('h3');
-    h3Ingredients.textContent = 'Ingredients';
-    printDiv.appendChild(h3Ingredients);
-    const ul = document.createElement('ul');
-    meal.ingredients.forEach(i => {
-      const li = document.createElement('li');
-      li.textContent = `${i.amount} ${i.name}`;
-      ul.appendChild(li);
-    });
-    printDiv.appendChild(ul);
-    const h3Instructions = document.createElement('h3');
-    h3Instructions.textContent = 'Instructions';
-    printDiv.appendChild(h3Instructions);
-    const p = document.createElement('p');
-    p.textContent = meal.instructions ?? '';
-    printDiv.appendChild(p);
-    setTimeout(() => {
-      window.print();
-      printDiv.innerHTML = '';
-    }, 200);
-    return;
-  }
-
-  // Desktop: use popup
-  const popup = window.open('', '_blank', 'width=800,height=600');
+  const popup = window.open('', '_blank', isMobile ? undefined : 'width=800,height=600');
   if (!popup) return;
+
   popup.document.title = meal.title;
   popup.document.body.innerHTML = '';
+
   const style = popup.document.createElement('style');
   style.textContent = `
     body { font-family: Arial; padding: 20px; }
     h1 { margin-bottom: 10px; }
     ul { margin-bottom: 20px; }
     button { margin-right: 10px; }
+    .close-btn { display: block; margin: 30px auto 0 auto; padding: 10px 24px; font-size: 1.1rem; background: #eee; border: 1px solid #aaa; border-radius: 6px; cursor: pointer; }
   `;
   popup.document.head.appendChild(style);
+
   const h1 = popup.document.createElement('h1');
   h1.textContent = meal.title;
   popup.document.body.appendChild(h1);
+
   const h3Ingredients = popup.document.createElement('h3');
   h3Ingredients.textContent = 'Ingredients';
   popup.document.body.appendChild(h3Ingredients);
+
   const ul = popup.document.createElement('ul');
   meal.ingredients.forEach(i => {
     const li = popup.document.createElement('li');
@@ -404,50 +379,36 @@ printMeal(dayObj: any, mealType: string) {
     ul.appendChild(li);
   });
   popup.document.body.appendChild(ul);
+
   const h3Instructions = popup.document.createElement('h3');
   h3Instructions.textContent = 'Instructions';
   popup.document.body.appendChild(h3Instructions);
+
   const p = popup.document.createElement('p');
   p.textContent = meal.instructions ?? '';
   popup.document.body.appendChild(p);
-  setTimeout(() => {
-    popup.print();
-    popup.close();
-  }, 300);
+
+  if (isMobile) {
+    // Add a close button for mobile
+    const closeBtn = popup.document.createElement('button');
+    closeBtn.textContent = 'Close';
+    closeBtn.className = 'close-btn';
+    closeBtn.onclick = () => popup.close();
+    popup.document.body.appendChild(closeBtn);
+    setTimeout(() => {
+      popup.print();
+    }, 300);
+  } else {
+    setTimeout(() => {
+      popup.print();
+      popup.close();
+    }, 300);
+  }
 }
 
 printFullPlan() {
   const isMobile = window.matchMedia('(max-width: 600px)').matches;
-  if (isMobile) {
-    const printDiv = document.getElementById('mobile-print-container');
-    if (!printDiv) return;
-    printDiv.innerHTML = '';
-    const h1 = document.createElement('h1');
-    h1.textContent = 'Meal Plan';
-    printDiv.appendChild(h1);
-    const calendarSource = document.querySelector('.print-calendar');
-    const grocerySource = document.querySelector('.print-grocery');
-    const cleanCalendar = calendarSource?.cloneNode(true) as HTMLElement | null;
-    const cleanGrocery = grocerySource?.cloneNode(true) as HTMLElement | null;
-    cleanCalendar?.querySelectorAll('.print-icon').forEach(el => el.remove());
-    cleanCalendar?.querySelectorAll('.re-roll-icon').forEach(el => el.remove());
-    cleanGrocery?.querySelectorAll('.print-icon').forEach(el => el.remove());
-    if (cleanCalendar) printDiv.appendChild(cleanCalendar);
-    if (cleanGrocery && cleanGrocery.textContent?.trim()) {
-      const h2 = document.createElement('h2');
-      h2.textContent = 'Grocery List';
-      printDiv.appendChild(h2);
-      printDiv.appendChild(cleanGrocery);
-    }
-    setTimeout(() => {
-      window.print();
-      printDiv.innerHTML = '';
-    }, 200);
-    return;
-  }
-
-  // Desktop: use popup
-  const popup = window.open('', '_blank', 'width=1000,height=800');
+  const popup = window.open('', '_blank', isMobile ? undefined : 'width=1000,height=800');
   if (!popup) return;
 
   popup.document.title = 'Meal Plan';
@@ -527,6 +488,7 @@ printFullPlan() {
       break-after: auto;
       page-break-after: auto;
     }
+    .close-btn { display: block; margin: 30px auto 0 auto; padding: 10px 24px; font-size: 1.1rem; background: #eee; border: 1px solid #aaa; border-radius: 6px; cursor: pointer; }
   `;
   popup.document.head.appendChild(style);
 
@@ -555,10 +517,22 @@ printFullPlan() {
     popup.document.body.appendChild(grocerySection);
   }
 
-  setTimeout(() => {
-    popup.print();
-    popup.close();
-  }, 300);
+  if (isMobile) {
+    // Add a close button for mobile
+    const closeBtn = popup.document.createElement('button');
+    closeBtn.textContent = 'Close';
+    closeBtn.className = 'close-btn';
+    closeBtn.onclick = () => popup.close();
+    popup.document.body.appendChild(closeBtn);
+    setTimeout(() => {
+      popup.print();
+    }, 300);
+  } else {
+    setTimeout(() => {
+      popup.print();
+      popup.close();
+    }, 300);
+  }
 }
 
   togglePrintMenu(event: Event) {
