@@ -7,13 +7,8 @@
     </div>
     <div class="card-body">
       <ul class="mb-0">
-        <li>Click any meal to edit ingredients or instructions; The grocery list updates automatically from ingredients you add.</li>
-        <li>Click <strong>Generate random meals</strong> to fill the rest.</li>
-        <li>If you don't like a meal, click the re-roll icon to generate a new one.</li>
-        <li>Click the mini print icon to print just that meal's recipe.</li>
-        <li>Click the grocery list to edit it manually.</li>
-        <li>Don't want to plan out every meal? Use the "Meal times" dropdown to toggle which meal times will show.</li>
-        <li>Click the print button to print your meal schedule and grocery list.</li>
+        <li>Click any meal to edit ingredients or instructions.</li>
+        <li>Click <strong>Generate random meals</strong> to fill the rest. If you don't like a meal, click the re-roll icon to generate a new one.</li>
       </ul>
     </div>
   </div>
@@ -125,7 +120,10 @@
   }
 
   <hr class="my-4" />
-  <h4>Grocery List (Version 2 will come later with a more helpful list)</h4>
+  <h4>
+    Grocery List (Version 2 will come later with a more helpful list)
+    <p>Click on the list to edit it manually.</p>
+  </h4>
 
   @if(!editingGroceries()) {
     <div class="grocery-display print-grocery" (click)="editingGroceries.set(true)">
