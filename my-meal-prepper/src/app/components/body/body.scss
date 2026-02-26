@@ -91,10 +91,15 @@
 }
 
 // Limit main content width for focus
-.container, .controls-card, .print-calendar, .grocery-display, textarea.grocery-textarea {
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+
+@media (max-width: 600px) {
+    .container, .controls-card, .print-calendar, .grocery-display, textarea.grocery-textarea {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
 }
 
 .control-row label {
@@ -145,9 +150,9 @@
         margin-top: 0.25rem;
     }
     .flex-area {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.25rem;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
     }
 }
 
