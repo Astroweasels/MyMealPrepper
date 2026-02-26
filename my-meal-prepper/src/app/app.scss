@@ -195,7 +195,7 @@ textarea {
 }
 
 /* Optional: stack links vertically on mobile, keep inline on larger screens */
-@media (min-width: 769px) {
+@media (min-width: 600px) {
   .flex-area {
     flex-direction: column; /* can also change to row if you want inline links */
   }
