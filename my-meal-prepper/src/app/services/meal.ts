@@ -64,7 +64,13 @@ export class MealService {
   }
 
   getRandomMeals(count: number): FullMeal[] {
-    return this.shuffle([...this.allMeals]).slice(0, count);
+    return this.shuffle(
+      [...this.allMeals].filter(m =>
+        m['strCategory'] !== 'Side' &&
+        m['strCategory'] !== 'Dessert' &&
+        m['strCategory'] !== 'Starter'
+      )
+    ).slice(0, count);
   }
 
   private shuffle<T>(array: T[]): T[] {
