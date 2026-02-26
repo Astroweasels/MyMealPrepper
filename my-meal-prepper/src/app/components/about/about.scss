@@ -1,0 +1,48 @@
+// Modern About page styles
+.about-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 60vh;
+	background: linear-gradient(135deg, #f8fafc 60%, #e3e9f3 100%);
+}
+
+.about-card {
+	background: #fff;
+	border-radius: 16px;
+	box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+	padding: 2.5rem 2rem;
+	max-width: 500px;
+	width: 100%;
+	text-align: center;
+}
+
+.about-card h1 {
+	font-size: 2.2rem;
+	margin-bottom: 0.5rem;
+	color: #2a3a4a;
+}
+
+.about-card .subtitle {
+	font-size: 1.1rem;
+	color: #6c7a89;
+	margin-bottom: 1.2rem;
+}
+
+.about-card hr {
+	margin: 1.2rem 0;
+	border: none;
+	border-top: 1px solid #e3e9f3;
+}
+
+.about-card p {
+	font-size: 1rem;
+	color: #3a4a5a;
+	margin-bottom: 1.2rem;
+}
+
+.about-footer {
+	margin-top: 2rem;
+	font-size: 1.05rem;
+	color: #6c7a89;
+}

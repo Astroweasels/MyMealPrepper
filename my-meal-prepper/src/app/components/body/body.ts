@@ -356,21 +356,115 @@ printMeal(dayObj: any, mealType: string) {
 
   const style = popup.document.createElement('style');
   style.textContent = `
-    body { font-family: Arial; padding: 20px; }
-    h1 { margin-bottom: 10px; }
-    ul { margin-bottom: 20px; }
-    button { margin-right: 10px; }
-    .close-btn { display: block; margin: 30px auto 0 auto; padding: 10px 24px; font-size: 1.1rem; background: #eee; border: 1px solid #aaa; border-radius: 6px; cursor: pointer; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f8fafc;
+      padding: 0;
+      margin: 0;
+      color: #2a3a4a;
+    }
+    .print-wrapper {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 2rem 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #2a3a4a;
+      text-align: center;
+    }
+    .subtitle {
+      font-size: 1.1rem;
+      color: #6c7a89;
+      margin-bottom: 1.2rem;
+      text-align: center;
+    }
+    hr {
+      margin: 1.2rem 0;
+      border: none;
+      border-top: 1px solid #e3e9f3;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 1.5rem;
+      margin-bottom: 0.7rem;
+      color: #3a4a5a;
+    }
+    ul {
+      margin-bottom: 1.2rem;
+      padding-left: 1.2rem;
+    }
+    li {
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+    .instructions {
+      font-size: 1rem;
+      color: #3a4a5a;
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+    .close-btn {
+      display: block;
+      margin: 30px auto 0 auto;
+      padding: 10px 24px;
+      font-size: 1.1rem;
+      background: #eee;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    @media (max-width: 600px) {
+      .print-wrapper {
+        max-width: 98vw;
+        padding: 1rem 0.5rem;
+      }
+      h1 {
+        font-size: 1.3rem;
+      }
+      .section-title {
+        font-size: 1.05rem;
+      }
+      li, .instructions {
+        font-size: 0.95rem;
+      }
+    }
+    @media print and (orientation: landscape) {
+      .print-wrapper {
+        max-width: 900px;
+        padding: 2rem 3rem;
+      }
+      h1 {
+        font-size: 2.2rem;
+      }
+    }
   `;
   popup.document.head.appendChild(style);
 
+  const wrapper = popup.document.createElement('div');
+  wrapper.className = 'print-wrapper';
+
   const h1 = popup.document.createElement('h1');
   h1.textContent = meal.title;
-  popup.document.body.appendChild(h1);
+  wrapper.appendChild(h1);
 
-  const h3Ingredients = popup.document.createElement('h3');
-  h3Ingredients.textContent = 'Ingredients';
-  popup.document.body.appendChild(h3Ingredients);
+  const subtitle = popup.document.createElement('div');
+  subtitle.className = 'subtitle';
+  subtitle.textContent = 'Meal Details';
+  wrapper.appendChild(subtitle);
+
+  const hr = popup.document.createElement('hr');
+  wrapper.appendChild(hr);
+
+  const sectionTitle1 = popup.document.createElement('div');
+  sectionTitle1.className = 'section-title';
+  sectionTitle1.textContent = 'Ingredients';
+  wrapper.appendChild(sectionTitle1);
 
   const ul = popup.document.createElement('ul');
   meal.ingredients.forEach(i => {
@@ -378,15 +472,19 @@ printMeal(dayObj: any, mealType: string) {
     li.textContent = `${i.amount} ${i.name}`;
     ul.appendChild(li);
   });
-  popup.document.body.appendChild(ul);
+  wrapper.appendChild(ul);
 
-  const h3Instructions = popup.document.createElement('h3');
-  h3Instructions.textContent = 'Instructions';
-  popup.document.body.appendChild(h3Instructions);
+  const sectionTitle2 = popup.document.createElement('div');
+  sectionTitle2.className = 'section-title';
+  sectionTitle2.textContent = 'Instructions';
+  wrapper.appendChild(sectionTitle2);
 
-  const p = popup.document.createElement('p');
-  p.textContent = meal.instructions ?? '';
-  popup.document.body.appendChild(p);
+  const instructions = popup.document.createElement('div');
+  instructions.className = 'instructions';
+  instructions.textContent = meal.instructions ?? '';
+  wrapper.appendChild(instructions);
+
+  popup.document.body.appendChild(wrapper);
 
   if (isMobile) {
     // Add a close button for mobile
@@ -427,95 +525,163 @@ printFullPlan() {
   const style = popup.document.createElement('style');
   style.textContent = `
     body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f8fafc;
+      padding: 0;
+      margin: 0;
+      color: #2a3a4a;
     }
-
+    .print-wrapper {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 2.5rem 2rem;
+    }
     h1 {
-      margin-bottom: 30px;
+      font-size: 2.2rem;
+      margin-bottom: 1.2rem;
+      color: #2a3a4a;
+      text-align: center;
     }
-
     h2 {
-      margin-bottom: 20px;
+      font-size: 1.3rem;
+      color: #3a4a5a;
+      margin-bottom: 1.2rem;
+      text-align: left;
     }
-
+    hr {
+      margin: 1.2rem 0;
+      border: none;
+      border-top: 1px solid #e3e9f3;
+    }
+    .calendar-section {
+      margin-bottom: 2rem;
+    }
     .week-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 15px;
+      gap: 1.2rem;
+      margin-bottom: 2rem;
     }
-
-    .card {
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      break-inside: avoid;
-      page-break-inside: avoid;
-    }
-
-    ul {
-      margin-bottom: 20px;
-    }
-
-    .card h3 {
-      margin-top: 15px;
-    }
-
-    .card p {
-      margin-top: 10px;
-    }
-
-    .card-body > div {
-      margin-bottom: 15px;
-    }
-
     .meal-card {
-      margin-bottom: 20px;
+      background: #f8fafc;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      min-width: 0;
     }
-
-    .meal-type-label {
+    .card-title {
+      font-size: 1.1rem;
       font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #2a3a4a;
     }
-
-    /* Page separation */
-    .print-section {
-      break-after: page;
-      page-break-after: always;
+    .meal-type-label {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #3a4a5a;
+      margin-bottom: 0.3rem;
     }
-
-    .print-section:last-child {
-      break-after: auto;
-      page-break-after: auto;
+    .meal-display {
+      font-size: 0.98rem;
+      color: #3a4a5a;
+      background: #fff;
+      border-radius: 6px;
+      padding: 0.5rem 0.7rem;
+      margin-bottom: 0.4rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
     }
-    .close-btn { display: block; margin: 30px auto 0 auto; padding: 10px 24px; font-size: 1.1rem; background: #eee; border: 1px solid #aaa; border-radius: 6px; cursor: pointer; }
+    .grocery-section {
+      margin-top: 2rem;
+      background: #f8fafc;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 1.5rem 1rem;
+    }
+    .grocery-section h2 {
+      margin-bottom: 1rem;
+    }
+    .grocery-section ul {
+      margin-bottom: 0;
+      padding-left: 1.2rem;
+    }
+    .grocery-section li {
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    .close-btn {
+      display: block;
+      margin: 30px auto 0 auto;
+      padding: 10px 24px;
+      font-size: 1.1rem;
+      background: #eee;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    @media (max-width: 900px) {
+      .print-wrapper {
+        max-width: 98vw;
+        padding: 1rem 0.5rem;
+      }
+      h1 {
+        font-size: 1.3rem;
+      }
+      h2 {
+        font-size: 1.05rem;
+      }
+      .meal-card, .grocery-section {
+        padding: 0.7rem 0.3rem;
+      }
+      .week-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.7rem;
+      }
+    }
+    @media print and (orientation: landscape) {
+      .print-wrapper {
+        max-width: 1200px;
+        padding: 2rem 3rem;
+      }
+      h1 {
+        font-size: 2.4rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
   `;
   popup.document.head.appendChild(style);
 
+  const wrapper = popup.document.createElement('div');
+  wrapper.className = 'print-wrapper';
+
   const h1 = popup.document.createElement('h1');
   h1.textContent = 'Meal Plan';
-  popup.document.body.appendChild(h1);
+  wrapper.appendChild(h1);
+
+  const hr = popup.document.createElement('hr');
+  wrapper.appendChild(hr);
 
   const calendarSection = popup.document.createElement('div');
-  calendarSection.className = 'print-section';
-
-  if (cleanCalendar) {
-    calendarSection.appendChild(cleanCalendar);
-  }
-
-  popup.document.body.appendChild(calendarSection);
+  calendarSection.className = 'calendar-section';
+  if (cleanCalendar) calendarSection.appendChild(cleanCalendar);
+  wrapper.appendChild(calendarSection);
 
   if (cleanGrocery && cleanGrocery.textContent?.trim()) {
     const grocerySection = popup.document.createElement('div');
-    grocerySection.className = 'print-section';
-
+    grocerySection.className = 'grocery-section';
     const h2 = popup.document.createElement('h2');
     h2.textContent = 'Grocery List';
     grocerySection.appendChild(h2);
-
     grocerySection.appendChild(cleanGrocery);
-    popup.document.body.appendChild(grocerySection);
+    wrapper.appendChild(grocerySection);
   }
+
+  popup.document.body.appendChild(wrapper);
 
   if (isMobile) {
     // Add a close button for mobile
