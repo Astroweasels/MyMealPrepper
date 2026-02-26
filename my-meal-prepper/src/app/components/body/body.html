@@ -113,6 +113,20 @@
   }
 
   <hr class="my-4" />
+  <!-- Mobile print buttons above grocery list -->
+  <div class="mobile-print-btn-group">
+    <button class="btn btn-info print-btn" (click)="printFullPlan(false)">
+      Print Calendar
+    </button>
+    <button class="btn btn-primary print-btn" (click)="printFullPlan(true)">
+      Print All
+    </button>
+    @if(selectedMeals().length > 0) {
+      <button class="btn btn-warning print-btn" (click)="printSelectedRecipes()">
+        Print Selected Recipes
+      </button>
+    }
+  </div>
   <h4>
     Grocery List
   </h4>

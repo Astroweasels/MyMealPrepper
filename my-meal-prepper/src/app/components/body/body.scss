@@ -1,3 +1,19 @@
+.mobile-print-btn-group {
+    display: none;
+    margin-bottom: 1rem;
+    gap: 0.5rem;
+}
+
+@media (max-width: 600px) {
+    .mobile-print-btn-group {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .mobile-print-btn-group .print-btn {
+        margin-bottom: 0.5rem;
+    }
+}
 .meal-select-checkbox-wrap {
     display: flex;
     align-items: center;
