@@ -74,9 +74,9 @@
             @for(meal of meals; track $index){
               @if(selectedMealTypes().includes(meal)){
                 <div>
-                  <div>
+                  <div class="meal-label-icon-wrap">
                     <label id="meal-label-{{ meal }}" class="meal-type-label">{{ meal }}</label>
-                    <div class="flex-area" style="margin-top: 0.25rem;">
+                    <div class="flex-area">
                       <button
                         class="print-icon"
                         (click)="printMeal(dayObj, meal)"
