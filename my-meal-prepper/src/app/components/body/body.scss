@@ -123,15 +123,30 @@
 }
 // Responsive week grid for date cards
 .week-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1rem;
+}
+
+@media (max-width: 900px) {
+    .week-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
 }
 
 @media (max-width: 600px) {
-    .week-grid {
+    .control-row {
         grid-template-columns: 1fr;
-        gap: 0.5rem;
+        row-gap: 0.25rem;
+    }
+    .control-row label {
+        margin-bottom: 0.25rem;
+    }
+    #week-range-select,
+    .meal-times-toggle-row {
+        margin-left: 0 !important;
+        margin-top: 0.25rem;
     }
 }
 
