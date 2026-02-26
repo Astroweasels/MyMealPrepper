@@ -26,10 +26,10 @@
     </button>
     <div class="print-container print-btn-group">
       <button class="btn btn-info print-btn" (click)="printFullPlan(false)">
-        <span class="print-icon">🖨</span> Print Calendar
+        Print Calendar
       </button>
       <button class="btn btn-primary print-btn" (click)="printFullPlan(true)">
-        <span class="print-icon">🖨</span> Print All
+        Print All
       </button>
     </div>
   </div>
@@ -69,16 +69,22 @@
 
   <div class="print-calendar">
     @for(week of weekDaysWithDates(); track $index) {
-      <div class="week-grid mb-4">
+      <div class="week-grid mb-4 print-section">
       @for(dayObj of week; track dayObj){
-        <div id="{{ dayObj.day }}-{{ dayObj.date }}" class="card h-100 meal-card">
+        <div id="{{ dayObj.day }}-{{ dayObj.date }}" class="card h-100 meal-card" [class.selected]="isMealSelected(dayObj, meal)">
           <div class="card-body">
             <h5 class="card-title">
               {{ dayObj.day }} - {{ dayObj.date }}
             </h5>
             @for(meal of meals; track $index){
               @if(selectedMealTypes().includes(meal)){
-                <div>
+                <div class="meal-select-wrap">
+                  <input type="checkbox"
+                    class="meal-select-checkbox"
+                    [checked]="isMealSelected(dayObj, meal)"
+                    (change)="toggleMealSelection(dayObj, meal)"
+                    title="Select for recipe print"
+                  />
                   <div class="meal-label-icon-wrap">
                     <label id="meal-label-{{ meal }}" class="meal-type-label">{{ meal }}</label>
                     <div class="flex-area">
@@ -109,6 +115,13 @@
             }
           </div>
         </div>
+      @if(selectedMeals().length > 0) {
+        <div class="print-selected-recipes-btn-wrap">
+          <button class="btn btn-warning print-btn" (click)="printSelectedRecipes()">
+            Print Selected Recipes
+          </button>
+        </div>
+      }
       }
     </div>
   }

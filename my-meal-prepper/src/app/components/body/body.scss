@@ -1,3 +1,14 @@
+// Ensure each week prints on its own page
+@media print {
+    .print-section {
+        page-break-after: always;
+        break-after: page;
+    }
+    .print-section:last-child {
+        page-break-after: auto;
+        break-after: auto;
+    }
+}
 // Print button group styles
 .print-btn-group {
     display: flex;
@@ -248,4 +259,56 @@
     min-width: 0;
     margin-bottom: 0;
     box-sizing: border-box;
+.meal-card.selected {
+    box-shadow: 0 0 0 2px #ffc107;
+    border: 2px solid #ffc107;
+}
+
+.meal-select-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.meal-select-checkbox {
+    accent-color: #ffc107;
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 0.3em;
+}
+
+.print-selected-recipes-btn-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem 0 1rem 0;
+}
+
+.print-selected-recipes-btn-wrap .print-btn {
+    font-size: 1.1em;
+    font-weight: 600;
+    padding: 0.7em 2em;
+    border-radius: 8px;
+    background: #ffc107;
+    color: #222;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.2s;
+}
+
+.print-selected-recipes-btn-wrap .print-btn:hover {
+    background: #ffb300;
+}
+
+@media (max-width: 600px) {
+    .print-selected-recipes-btn-wrap {
+        margin: 1rem 0 0.5rem 0;
+    }
+    .print-selected-recipes-btn-wrap .print-btn {
+        font-size: 1em;
+        padding: 0.5em 1em;
+    }
+    .meal-select-checkbox {
+        width: 1em;
+        height: 1em;
+    }
+}
 }

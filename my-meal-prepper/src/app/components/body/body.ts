@@ -14,6 +14,123 @@ import { EditableMeal } from '../../models/editable-meal.model';
 })
 
 export class Body {
+    // Selection state for meal cards
+    selectedMealsState = signal<{ day: string; date: string; mealType: string }[]>([]);
+    // Check if meal is selected
+    isMealSelected(dayObj: any, mealType: string): boolean {
+      return this.selectedMealsState().some(sel => sel.day === dayObj.day && sel.date === dayObj.date && sel.mealType === mealType);
+    }
+
+    // Toggle meal selection
+    toggleMealSelection(dayObj: any, mealType: string) {
+      const sel = { day: dayObj.day, date: dayObj.date, mealType };
+      const current = this.selectedMealsState();
+      const exists = current.some(s => s.day === sel.day && s.date === sel.date && s.mealType === sel.mealType);
+      if (exists) {
+        this.selectedMealsState.set(current.filter(s => !(s.day === sel.day && s.date === sel.date && s.mealType === sel.mealType)));
+      } else {
+        this.selectedMealsState.set([...current, sel]);
+      }
+    }
+
+    // Get selected meal objects
+    selectedMealsData(): EditableMeal[] {
+      return this.selectedMealsState().map(sel => {
+        const key = `${sel.day}-${sel.date}`;
+        const index = this.meals.indexOf(sel.mealType);
+        return this.generatedMeals()[key]?.[index] || null;
+      }).filter(m => m && m.title && m.title !== 'Not selected');
+    }
+
+    // Print all selected recipes
+    printSelectedRecipes() {
+      const meals = this.selectedMealsData();
+      if (!meals.length) return;
+      const isMobile = window.matchMedia('(max-width: 600px)').matches;
+      const popup = window.open('', '_blank', isMobile ? undefined : 'width=900,height=800');
+      if (!popup) return;
+
+      popup.document.title = 'Selected Recipes';
+      popup.document.body.innerHTML = '';
+
+      const style = popup.document.createElement('style');
+      style.textContent = `
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8fafc; padding: 0; margin: 0; color: #2a3a4a; }
+        .print-wrapper { max-width: 900px; margin: 2rem auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 2.5rem 2rem; }
+        h1 { font-size: 2.2rem; margin-bottom: 1.2rem; color: #2a3a4a; text-align: center; }
+        .recipe-section { margin-bottom: 2.5rem; page-break-after: always; }
+        .section-title { font-size: 1.2rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.7rem; color: #3a4a5a; }
+        ul { margin-bottom: 1.2rem; padding-left: 1.2rem; }
+        li { font-size: 1rem; margin-bottom: 0.4rem; }
+        .instructions { font-size: 1rem; color: #3a4a5a; margin-top: 1rem; line-height: 1.6; }
+        hr { margin: 1.2rem 0; border: none; border-top: 1px solid #e3e9f3; }
+        @media (max-width: 600px) { .print-wrapper { max-width: 98vw; padding: 1rem 0.5rem; } h1 { font-size: 1.3rem; } .section-title { font-size: 1.05rem; } li, .instructions { font-size: 0.95rem; } }
+        @media print and (orientation: landscape) { .print-wrapper { max-width: 1200px; padding: 2rem 3rem; } h1 { font-size: 2.4rem; } }
+      `;
+      popup.document.head.appendChild(style);
+
+      const wrapper = popup.document.createElement('div');
+      wrapper.className = 'print-wrapper';
+
+      const h1 = popup.document.createElement('h1');
+      h1.textContent = 'Selected Recipes';
+      wrapper.appendChild(h1);
+
+      meals.forEach((meal, idx) => {
+        const section = popup.document.createElement('div');
+        section.className = 'recipe-section';
+
+        const title = popup.document.createElement('div');
+        title.className = 'section-title';
+        title.textContent = `${meal.title} (${meal.mealType}, ${meal.day} ${meal.date})`;
+        section.appendChild(title);
+
+        const hr = popup.document.createElement('hr');
+        section.appendChild(hr);
+
+        const ingredientsTitle = popup.document.createElement('div');
+        ingredientsTitle.className = 'section-title';
+        ingredientsTitle.textContent = 'Ingredients';
+        section.appendChild(ingredientsTitle);
+
+        const ul = popup.document.createElement('ul');
+        meal.ingredients.forEach(i => {
+          const li = popup.document.createElement('li');
+          li.textContent = `${i.amount} ${i.name}`;
+          ul.appendChild(li);
+        });
+        section.appendChild(ul);
+
+        const instructionsTitle = popup.document.createElement('div');
+        instructionsTitle.className = 'section-title';
+        instructionsTitle.textContent = 'Instructions';
+        section.appendChild(instructionsTitle);
+
+        const instructions = popup.document.createElement('div');
+        instructions.className = 'instructions';
+        instructions.textContent = meal.instructions ?? '';
+        section.appendChild(instructions);
+
+        wrapper.appendChild(section);
+      });
+
+      popup.document.body.appendChild(wrapper);
+
+      if (isMobile) {
+        const closeBtn = popup.document.createElement('button');
+        closeBtn.textContent = 'Close';
+        closeBtn.className = 'close-btn';
+        closeBtn.onclick = () => popup.close();
+        popup.document.body.appendChild(closeBtn);
+        setTimeout(() => { popup.print(); }, 300);
+      } else {
+        setTimeout(() => { popup.print(); popup.close(); }, 300);
+      }
+    }
+    // Expose selectedMeals() for template
+    selectedMeals() {
+      return this.selectedMealsState();
+    }
   startFromToday = signal(false);
   weekDays = signal(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const);
   meals = ['Breakfast','Lunch','Dinner'];
@@ -752,6 +869,8 @@ printFullPlan(includeGrocery: boolean = true) {
       newMeal = candidate;
       break;
     }
+    // Remove from selection if rerolled
+    this.selectedMealsState.set(this.selectedMealsState().filter(sel => !(sel.day === dayObj.day && sel.date === dayObj.date && sel.mealType === mealType)));
   }
 
   if (!newMeal) return;
