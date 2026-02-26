@@ -171,3 +171,44 @@ textarea {
     break-after: auto;
     page-break-after: auto;
 }
+
+/* header.scss */
+
+.nav-flex-area {
+  display: flex;
+  flex-direction: column; /* stack h1 and links vertically */
+  align-items: center;    /* center everything horizontally */
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.nav-link {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #007bff;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: #e9ecef;
+    color: #0056b3;
+  }
+
+  &.active-link {
+    background: #007bff;
+    color: white;
+  }
+}
+
+/* Optional: stack links vertically on mobile, keep inline on larger screens */
+@media (min-width: 769px) {
+  .flex-area {
+    flex-direction: column; /* can also change to row if you want inline links */
+  }
+
+  .nav-link {
+    margin: 0 0.25rem;
+  }
+}
