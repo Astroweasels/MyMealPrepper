@@ -1,15 +1,20 @@
 @media print and (max-width: 600px) {
-    body *:not(#mobile-print-container):not(#mobile-print-container *) {
+    html, body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    body > *:not(#mobile-print-container) {
         display: none !important;
     }
     #mobile-print-container {
         display: block !important;
-        width: 100vw;
-        background: white;
-        color: black;
+        width: 100vw !important;
+        background: white !important;
+        color: black !important;
         position: static !important;
-        box-sizing: border-box;
-        padding: 1rem;
+        box-sizing: border-box !important;
+        padding: 1rem !important;
     }
 }
 .meal-label-icon-wrap {
