@@ -1,3 +1,36 @@
+.meal-select-checkbox-wrap {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 600px) {
+    .meal-select-checkbox-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .meal-select-helper {
+        margin-left: 0;
+        margin-top: 2px;
+    }
+}
+.meal-select-helper {
+    font-size: 0.85em;
+    color: #888;
+    margin-left: 4px;
+    vertical-align: middle;
+    display: inline-block;
+}
+// Subtle visually-hidden label for accessibility
+.meal-select-label.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
 .grocery-toggle-row {
     display: flex;
     align-items: center;

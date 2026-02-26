@@ -67,12 +67,16 @@
             @for(meal of meals; track $index){
               @if(selectedMealTypes().includes(meal)){
                 <div class="meal-select-wrap">
-                  <input type="checkbox"
-                    class="meal-select-checkbox"
-                    [checked]="isMealSelected(dayObj, meal)"
-                    (change)="toggleMealSelection(dayObj, meal)"
-                    title="Select for recipe print"
-                  />
+                  <div class="meal-select-checkbox-wrap">
+                    <input type="checkbox"
+                      class="meal-select-checkbox"
+                      [checked]="isMealSelected(dayObj, meal)"
+                      (change)="toggleMealSelection(dayObj, meal)"
+                      id="select-{{ dayObj.day }}-{{ dayObj.date }}-{{ meal }}"
+                      title="Select for recipe print"
+                    />
+                    <label for="select-{{ dayObj.day }}-{{ dayObj.date }}-{{ meal }}" class="meal-select-label meal-select-helper">Select for mass print</label>
+                  </div>
                   <div class="meal-label-icon-wrap">
                     <label id="meal-label-{{ meal }}" class="meal-type-label">{{ meal }}</label>
                     <div class="flex-area">
