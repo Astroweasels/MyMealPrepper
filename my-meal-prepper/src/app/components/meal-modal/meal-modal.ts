@@ -31,6 +31,7 @@ export class MealModal {
 
   saveMeal() {
     this.meal.ingredients = this.parseIngredientText(this.ingredientsText);
+    this.meal.isManual = true;
     this.saved.emit(this.meal);
   }
   

@@ -10,4 +10,5 @@ export interface EditableMeal {
     name: string;
     amount?: string;
   }[];
+  isManual?: boolean;
 }

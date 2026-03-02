@@ -127,14 +127,13 @@ export class Body {
         closeBtn.textContent = 'Close';
         closeBtn.className = 'close-btn';
         closeBtn.onclick = () => popup.close();
-        // Add inline style to hide button during print
-        closeBtn.style.setProperty('display', 'block');
-        closeBtn.style.setProperty('@media print', 'display: none !important');
         popup.document.body.appendChild(closeBtn);
-        // Also add a print-specific style tag
+        // Add a print-specific style tag to hide button during print
         const printHideStyle = popup.document.createElement('style');
         printHideStyle.textContent = '@media print { .close-btn { display: none !important; } }';
         popup.document.head.appendChild(printHideStyle);
+        // Close popup after print or cancel
+        popup.onafterprint = () => popup.close();
         setTimeout(() => { popup.print(); }, 300);
       } else {
         setTimeout(() => { popup.print(); popup.close(); }, 300);
@@ -172,83 +171,99 @@ export class Body {
       });
   }
 
-async generateMeals() {
-  const allMeals: FullMeal[] = await this.mealService.loadMeals();
-  const days = this.weekDaysWithDates().flat();
-  const mealsToUse = [...allMeals];
 
-  const generated: Record<string, EditableMeal[]> = { ...this.generatedMeals() };
+  // Track if first click
+  private hasGeneratedOnce = false;
 
-  days.forEach(dayObj => {
-    const key = `${dayObj.day}-${dayObj.date}`;
-    const existingMeals = generated[key] || [];
-    const selectedTypes = this.selectedMealTypes();
-    const count = selectedTypes.length;
-    const shuffled = this.shuffle([...mealsToUse]);
-    const pickedMeals: FullMeal[] = [];
-    const usedTitles = new Set(existingMeals.map(m => m.title));
+  async generateMeals() {
+    const allMeals: FullMeal[] = await this.mealService.loadMeals();
+    const days = this.weekDaysWithDates().flat();
+    const mealsToUse = [...allMeals];
 
-    let i = 0;
-    while (pickedMeals.length < count && i < shuffled.length) {
-      const candidate = shuffled[i];
-      if (!usedTitles.has(candidate.strMeal)) {
-        pickedMeals.push(candidate);
-        usedTitles.add(candidate.strMeal);
+    // Track all manually entered meals by key+mealType
+    const generated: Record<string, EditableMeal[]> = { ...this.generatedMeals() };
+
+    // Track used meal titles globally for all days
+    const usedTitlesGlobal = new Set<string>();
+
+    days.forEach(dayObj => {
+      const key = `${dayObj.day}-${dayObj.date}`;
+      const existingMeals = generated[key] || [];
+      const selectedTypes = this.selectedMealTypes();
+      const count = selectedTypes.length;
+      const shuffled = this.shuffle([...mealsToUse]);
+      const pickedMeals: FullMeal[] = [];
+
+      let i = 0;
+      while (pickedMeals.length < count && i < shuffled.length) {
+        const candidate = shuffled[i];
+        if (!usedTitlesGlobal.has(candidate.strMeal)) {
+          pickedMeals.push(candidate);
+          usedTitlesGlobal.add(candidate.strMeal);
+        }
+        i++;
       }
-      i++;
-    }
 
       const newDayMeals: EditableMeal[] = selectedTypes.map((mealType, index) => {
-      const m = pickedMeals[index];
-      const existing = existingMeals.find(em => em.mealType === mealType);
-      if (existing && existing.title && existing.title !== 'Not selected') {
-        return existing;
-      }
+        const manualKey = `${key}-${mealType}`;
+        const existing = existingMeals.find(em => em.mealType === mealType);
 
-      if (!m) {
+        // Always preserve manually entered meals
+        if (existing && existing.isManual) {
+          return existing as EditableMeal;
+        }
+
+        // First click: preserve all existing meals
+        if (!this.hasGeneratedOnce && existing && existing.title && existing.title !== 'Not selected') {
+          return existing as EditableMeal;
+        }
+
+        const m = pickedMeals[index];
+        if (!m) {
+          return {
+            day: dayObj.day,
+            date: dayObj.date,
+            mealType,
+            title: 'Not selected',
+            instructions: '',
+            ingredients: []
+          };
+        }
+
+        const ingredients = [];
+        for (let j = 1; j <= 20; j++) {
+          const name = m[`strIngredient${j}`];
+          const amount = m[`strMeasure${j}`];
+          if (name && name.trim()) {
+            ingredients.push({
+              name: name.trim(),
+              amount: amount?.trim() || ''
+            });
+          }
+        }
+
         return {
           day: dayObj.day,
           date: dayObj.date,
           mealType,
-          title: 'Not selected',
-          instructions: '',
-          ingredients: []
+          title: m.strMeal,
+          instructions: m.strInstructions || '',
+          ingredients
         };
-      }
+      });
 
-      const ingredients = [];
-      for (let j = 1; j <= 20; j++) {
-        const name = m[`strIngredient${j}`];
-        const amount = m[`strMeasure${j}`];
-        if (name && name.trim()) {
-          ingredients.push({
-            name: name.trim(),
-            amount: amount?.trim() || ''
-          });
-        }
-      }
+      const updatedMeals = [
+        ...existingMeals.filter(m => !selectedTypes.includes(m.mealType)),
+        ...newDayMeals
+      ];
 
-      return {
-        day: dayObj.day,
-        date: dayObj.date,
-        mealType,
-        title: m.strMeal,
-        instructions: m.strInstructions || '',
-        ingredients
-      };
+      generated[key] = updatedMeals;
     });
 
-    const updatedMeals = [
-      ...existingMeals.filter(m => !selectedTypes.includes(m.mealType)),
-      ...newDayMeals
-    ];
-
-    generated[key] = updatedMeals;
-  });
-
-  this.generatedMeals.set(generated);
-  this.buildGroceryList();
-}
+    this.hasGeneratedOnce = true;
+    this.generatedMeals.set(generated);
+    this.buildGroceryList();
+  }
 
   shuffle<T>(arr: T[]): T[] {
     for (let i = arr.length - 1; i > 0; i--) {
