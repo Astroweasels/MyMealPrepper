@@ -15,6 +15,7 @@ import { EditableMeal } from '../../models/editable-meal.model';
 })
 
 export class Body {
+  defaultCalendarMeal = signal("Tap or click to add your own recipe");
   showIngredientAmounts = signal(true);
         // Returns true if any meal is selected for a given day
         isAnyMealSelectedForDay(dayObj: any): boolean {
@@ -656,6 +657,7 @@ printMeal(dayObj: any, mealType: string) {
 }
 
 printFullPlan(includeGrocery: boolean = true) {
+
   const isMobile = window.matchMedia('(max-width: 600px)').matches;
   const popup = window.open('', '_blank', isMobile ? undefined : 'width=1000,height=800');
   if (!popup) return;
@@ -669,10 +671,21 @@ printFullPlan(includeGrocery: boolean = true) {
   const cleanCalendar = calendarSource?.cloneNode(true) as HTMLElement | null;
   const cleanGrocery = grocerySource?.cloneNode(true) as HTMLElement | null;
 
+  // Remove print and reroll icons, checkboxes
   cleanCalendar?.querySelectorAll('.print-icon').forEach(el => el.remove());
   cleanCalendar?.querySelectorAll('.meal-select-checkbox-wrap').forEach(el => el.remove());
   cleanCalendar?.querySelectorAll('.re-roll-icon').forEach(el => el.remove());
   cleanGrocery?.querySelectorAll('.print-icon').forEach(el => el.remove());
+
+  // Remove default meal text from print
+  if (cleanCalendar) {
+    const defaultText = this.defaultCalendarMeal();
+    cleanCalendar.querySelectorAll('.meal-display').forEach(el => {
+      if (el.textContent && el.textContent.trim() === defaultText) {
+        el.textContent = '';
+      }
+    });
+  }
 
   const style = popup.document.createElement('style');
   style.textContent = `
@@ -690,23 +703,6 @@ printFullPlan(includeGrocery: boolean = true) {
       border-radius: 16px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08);
       padding: 2.5rem 2rem;
-    }
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1.2rem;
-      color: #2a3a4a;
-      text-align: center;
-    }
-    h2 {
-      font-size: 1.3rem;
-      color: #3a4a5a;
-      margin-bottom: 1.2rem;
-      text-align: left;
-    }
-    hr {
-      margin: 1.2rem 0;
-      border: none;
-      border-top: 1px solid #e3e9f3;
     }
     .calendar-section {
       margin-bottom: 2rem;
@@ -745,6 +741,14 @@ printFullPlan(includeGrocery: boolean = true) {
       padding: 0.5rem 0.7rem;
       margin-bottom: 0.4rem;
       box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      min-height: 1.8em;
+    }
+    .meal-display:empty::after {
+      content: '';
+      display: block;
+      min-height: 1.8em;
+      border-bottom: 1px dashed #bbb;
+      margin: 0.2em 0;
     }
     .grocery-section {
       margin-top: 2rem;
@@ -752,17 +756,29 @@ printFullPlan(includeGrocery: boolean = true) {
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       padding: 1.5rem 1rem;
+      page-break-before: always;
     }
     .grocery-section h2 {
       margin-bottom: 1rem;
     }
-    .grocery-section ul {
-      margin-bottom: 0;
-      padding-left: 1.2rem;
+    @media print {
+      .grocery-section ul {
+        margin-bottom: 0;
+        padding-left: 1.2rem;
+        column-count: 2 !important;
+        -webkit-column-count: 2 !important;
+        column-gap: 2.5rem !important;
+        -webkit-column-gap: 2.5rem !important;
+        column-fill: auto;
+        width: 100% !important;
+        display: block !important;
+      }
     }
     .grocery-section li {
       font-size: 1rem;
       margin-bottom: 0.3rem;
+      break-inside: avoid-column;
+      page-break-inside: avoid;
     }
     .close-btn {
       display: block;
@@ -779,12 +795,6 @@ printFullPlan(includeGrocery: boolean = true) {
         max-width: 98vw;
         padding: 1rem 0.5rem;
       }
-      h1 {
-        font-size: 1.3rem;
-      }
-      h2 {
-        font-size: 1.05rem;
-      }
       .meal-card, .grocery-section {
         padding: 0.7rem 0.3rem;
       }
@@ -792,17 +802,14 @@ printFullPlan(includeGrocery: boolean = true) {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.7rem;
       }
+      .grocery-section ul {
+        column-count: 1;
+      }
     }
     @media print and (orientation: landscape) {
       .print-wrapper {
         max-width: 1200px;
         padding: 2rem 3rem;
-      }
-      h1 {
-        font-size: 2.4rem;
-      }
-      h2 {
-        font-size: 1.5rem;
       }
     }
   `;
@@ -810,13 +817,6 @@ printFullPlan(includeGrocery: boolean = true) {
 
   const wrapper = popup.document.createElement('div');
   wrapper.className = 'print-wrapper';
-
-  const h1 = popup.document.createElement('h1');
-  h1.textContent = 'Meal Plan';
-  wrapper.appendChild(h1);
-
-  const hr = popup.document.createElement('hr');
-  wrapper.appendChild(hr);
 
   const calendarSection = popup.document.createElement('div');
   calendarSection.className = 'calendar-section';

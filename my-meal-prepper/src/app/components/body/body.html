@@ -63,7 +63,7 @@
           <div id="{{ dayObj.day }}-{{ dayObj.date }}" class="card h-100 meal-card" [class.selected]="isAnyMealSelectedForDay(dayObj)">
             <div class="card-body">
               <h5 class="card-title">
-                {{ dayObj.day }} - {{ dayObj.date }}
+                {{ dayObj.day }} - <br> {{ dayObj.date }}
               </h5>
               @for (meal of meals; track $index) {
                 @if (selectedMealTypes().includes(meal)) {
@@ -100,7 +100,8 @@
                       (click)="openMealModal(dayObj, meal)"
                     >
                       {{
-                        generatedMeals()[dayObj.day + '-' + dayObj.date]?.[meals.indexOf(meal)]?.title || 'Tap or click to add your own recipe'
+                        (generatedMeals()[dayObj.day + '-' + dayObj.date]?.[meals.indexOf(meal)]?.title === defaultCalendarMeal()) && printTarget() ? '' :
+                        (generatedMeals()[dayObj.day + '-' + dayObj.date]?.[meals.indexOf(meal)]?.title || defaultCalendarMeal())
                       }}
                     </div>
                   </div>
