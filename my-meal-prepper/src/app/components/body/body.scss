@@ -1,3 +1,23 @@
+.print-hide {
+    display: none !important;
+}
+
+@media print {
+    .mobile-print-btn-group,
+    .print-hide {
+        display: none !important;
+    }
+    .print-section {
+        page-break-after: always;
+        break-after: page;
+    }
+    .grocery-display:empty,
+    .grocery-list-info:empty,
+    .grocery-toggle-row:empty,
+    h4:empty {
+        display: none !important;
+    }
+}
 .mobile-print-btn-group {
     display: none;
     margin-bottom: 1rem;

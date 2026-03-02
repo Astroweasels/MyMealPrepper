@@ -114,7 +114,7 @@
 
   <hr class="my-4" />
   <!-- Mobile print buttons above grocery list -->
-  <div class="mobile-print-btn-group">
+  <div class="mobile-print-btn-group" [class.print-hide]="printTarget() === 'calendar'">
     <button class="btn btn-info print-btn" (click)="printFullPlan(false)">
       Print Calendar
     </button>
@@ -127,32 +127,32 @@
       </button>
     }
   </div>
-  <h4>
-    Grocery List
-  </h4>
-  <div class="grocery-toggle-row">
-    <label class="grocery-toggle-label" for="grocery-amount-toggle">Show measurements?</label>
-    <input id="grocery-amount-toggle" type="checkbox"
-      [checked]="showIngredientAmounts()"
-      (change)="showIngredientAmounts.set($any($event.target).checked); buildGroceryList();"
-      class="grocery-toggle-checkbox"
-    />
-  </div>
-  <p class="grocery-list-info">Click on the list to edit it manually.</p>
-
-  @if(!editingGroceries()) {
-    <div class="grocery-display print-grocery" (click)="editingGroceries.set(true)">
-      @for(item of groceryList(); track $index) {
-        <div>{{ item }}</div>
-      }
+  <div [class.print-hide]="printTarget() === 'calendar'">
+    <h4>Grocery List</h4>
+    <div class="grocery-toggle-row">
+      <label class="grocery-toggle-label" for="grocery-amount-toggle">Show measurements?</label>
+      <input id="grocery-amount-toggle" type="checkbox"
+        [checked]="showIngredientAmounts()"
+        (change)="showIngredientAmounts.set($any($event.target).checked); buildGroceryList();"
+        class="grocery-toggle-checkbox"
+      />
     </div>
-  } @else {
-    <textarea
-      class="form-control grocery-textarea"
-      [value]="groceryList().join('\n')"
-      (blur)="saveGroceries($event)"
-    ></textarea>
-  }
+    <p class="grocery-list-info">Click on the list to edit it manually.</p>
+
+    @if(!editingGroceries()) {
+      <div class="grocery-display print-grocery" (click)="editingGroceries.set(true)">
+        @for(item of groceryList(); track $index) {
+          <div>{{ item }}</div>
+        }
+      </div>
+    } @else {
+      <textarea
+        class="form-control grocery-textarea"
+        [value]="groceryList().join('\n')"
+        (blur)="saveGroceries($event)"
+      ></textarea>
+    }
+  </div>
 
 @if (isMealModalOpen) {
   <app-meal-modal
