@@ -670,6 +670,7 @@ printFullPlan(includeGrocery: boolean = true) {
   const cleanGrocery = grocerySource?.cloneNode(true) as HTMLElement | null;
 
   cleanCalendar?.querySelectorAll('.print-icon').forEach(el => el.remove());
+  cleanCalendar?.querySelectorAll('.meal-select-checkbox-wrap').forEach(el => el.remove());
   cleanCalendar?.querySelectorAll('.re-roll-icon').forEach(el => el.remove());
   cleanGrocery?.querySelectorAll('.print-icon').forEach(el => el.remove());
 
