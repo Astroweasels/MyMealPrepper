@@ -114,7 +114,7 @@
 
   <hr class="my-4" />
   <!-- Mobile print buttons above grocery list -->
-  <div class="mobile-print-btn-group" [class.print-hide]="printTarget() === 'calendar'">
+  <div class="mobile-print-btn-group" *ngIf="!printTarget()">
     <button class="btn btn-info print-btn" (click)="printFullPlan(false)">
       Print Calendar
     </button>
@@ -127,7 +127,7 @@
       </button>
     }
   </div>
-  <div [class.print-hide]="printTarget() === 'calendar'">
+  <div *ngIf="!printTarget() || printTarget() === 'grocery' || printTarget() === 'both'">
     <h4>Grocery List</h4>
     <div class="grocery-toggle-row">
       <label class="grocery-toggle-label" for="grocery-amount-toggle">Show measurements?</label>
