@@ -1,3 +1,38 @@
+// Utility classes for print control
+.no-print {
+    display: block;
+}
+.print-only {
+    display: none;
+}
+
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+    .print-calendar, .print-calendar * {
+        visibility: visible !important;
+        display: block !important;
+    }
+    .print-calendar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        background: white;
+        z-index: 9999;
+    }
+    .no-print {
+        display: none !important;
+    }
+    .print-only {
+        display: block !important;
+    }
+    .print-section {
+        page-break-after: always;
+        break-after: page;
+    }
+}
 .print-hide {
     display: none !important;
 }

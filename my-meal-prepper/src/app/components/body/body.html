@@ -2,7 +2,7 @@
   <!-- Hidden print container for mobile printing -->
   <div id="mobile-print-container" style="display:none;"></div>
 </div>
-<div class="controls-card shadow-sm mb-4 print-wrapper">
+  <div class="controls-card shadow-sm mb-4 print-wrapper no-print">
   <div class="controls-header">
     <button class="btn btn-success" (click)="generateMeals()">
       Generate Random Meals
@@ -55,109 +55,114 @@
     </div>
   </div>
 
-  <div class="print-calendar">
-    @for(week of weekDaysWithDates(); track $index) {
+  @if (!printTarget() || printTarget() === 'calendar') {
+    <div class="print-calendar">
+    @for (week of weekDaysWithDates(); track $index) {
       <div class="week-grid mb-4 print-section">
-      @for(dayObj of week; track dayObj){
-        <div id="{{ dayObj.day }}-{{ dayObj.date }}" class="card h-100 meal-card" [class.selected]="isAnyMealSelectedForDay(dayObj)">
-          <div class="card-body">
-            <h5 class="card-title">
-              {{ dayObj.day }} - {{ dayObj.date }}
-            </h5>
-            @for(meal of meals; track $index){
-              @if(selectedMealTypes().includes(meal)){
-                <div class="meal-select-wrap">
-                  <div class="meal-select-checkbox-wrap">
-                    <input type="checkbox"
-                      class="meal-select-checkbox"
-                      [checked]="isMealSelected(dayObj, meal)"
-                      (change)="toggleMealSelection(dayObj, meal)"
-                      id="select-{{ dayObj.day }}-{{ dayObj.date }}-{{ meal }}"
-                      title="Select for recipe print"
-                    />
-                    <label for="select-{{ dayObj.day }}-{{ dayObj.date }}-{{ meal }}" class="meal-select-label meal-select-helper">Select for mass print</label>
-                  </div>
-                  <div class="meal-label-icon-wrap">
-                    <label id="meal-label-{{ meal }}" class="meal-type-label">{{ meal }}</label>
-                    <div class="flex-area">
-                      <button
-                        class="print-icon"
-                        (click)="printMeal(dayObj, meal)"
-                        title="Print recipe">
-                        🖨
-                      </button>
-                      <button
-                        class="re-roll-icon"
-                        (click)="rerollMeal(dayObj, meal)"
-                        title="Pick a different random meal">
-                        🔄
-                      </button>
+        @for (dayObj of week; track dayObj) {
+          <div id="{{ dayObj.day }}-{{ dayObj.date }}" class="card h-100 meal-card" [class.selected]="isAnyMealSelectedForDay(dayObj)">
+            <div class="card-body">
+              <h5 class="card-title">
+                {{ dayObj.day }} - {{ dayObj.date }}
+              </h5>
+              @for (meal of meals; track $index) {
+                @if (selectedMealTypes().includes(meal)) {
+                  <div class="meal-select-wrap">
+                    <div class="meal-select-checkbox-wrap">
+                      <input type="checkbox"
+                        class="meal-select-checkbox"
+                        [checked]="isMealSelected(dayObj, meal)"
+                        (change)="toggleMealSelection(dayObj, meal)"
+                        id="select-{{ dayObj.day }}-{{ dayObj.date }}-{{ meal }}"
+                        title="Select for recipe print"
+                      />
+                      <label for="select-{{ dayObj.day }}-{{ dayObj.date }}-{{ meal }}" class="meal-select-label meal-select-helper">Select for mass print</label>
+                    </div>
+                    <div class="meal-label-icon-wrap">
+                      <label id="meal-label-{{ meal }}" class="meal-type-label">{{ meal }}</label>
+                      <div class="flex-area">
+                        <button
+                          class="print-icon"
+                          (click)="printMeal(dayObj, meal)"
+                          title="Print recipe">
+                          🖨
+                        </button>
+                        <button
+                          class="re-roll-icon"
+                          (click)="rerollMeal(dayObj, meal)"
+                          title="Pick a different random meal">
+                          🔄
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      class="meal-display clickable"
+                      (click)="openMealModal(dayObj, meal)"
+                    >
+                      {{
+                        generatedMeals()[dayObj.day + '-' + dayObj.date]?.[meals.indexOf(meal)]?.title || 'Tap or click to add your own recipe'
+                      }}
                     </div>
                   </div>
-                  <div
-                    class="meal-display clickable"
-                    (click)="openMealModal(dayObj, meal)"
-                  >
-                    {{
-                      generatedMeals()[dayObj.day + '-' + dayObj.date]?.[meals.indexOf(meal)]?.title || 'Tap or click to add your own recipe'
-                    }}
-                  </div>
-                </div>
+                }
               }
-            }
+            </div>
           </div>
-        </div>
-      }
-    </div>
-
-  }
-
-  <hr class="my-4" />
-  <!-- Mobile print buttons above grocery list -->
-  <div class="mobile-print-btn-group" *ngIf="!printTarget()">
-    <button class="btn btn-info print-btn" (click)="printFullPlan(false)">
-      Print Calendar
-    </button>
-    <button class="btn btn-primary print-btn" (click)="printFullPlan(true)">
-      Print All
-    </button>
-    @if(selectedMeals().length > 0) {
-      <button class="btn btn-warning print-btn" (click)="printSelectedRecipes()">
-        Print Selected Recipes
-      </button>
-    }
-  </div>
-  <div *ngIf="!printTarget() || printTarget() === 'grocery'">
-    <h4>Grocery List</h4>
-    <div class="grocery-toggle-row">
-      <label class="grocery-toggle-label" for="grocery-amount-toggle">Show measurements?</label>
-      <input id="grocery-amount-toggle" type="checkbox"
-        [checked]="showIngredientAmounts()"
-        (change)="showIngredientAmounts.set($any($event.target).checked); buildGroceryList();"
-        class="grocery-toggle-checkbox"
-      />
-    </div>
-    <p class="grocery-list-info">Click on the list to edit it manually.</p>
-
-    @if(!editingGroceries()) {
-      <div class="grocery-display print-grocery" (click)="editingGroceries.set(true)">
-        @for(item of groceryList(); track $index) {
-          <div>{{ item }}</div>
         }
       </div>
-    } @else {
-      <textarea
-        class="form-control grocery-textarea"
-        [value]="groceryList().join('\n')"
-        (blur)="saveGroceries($event)"
-      ></textarea>
     }
   </div>
-
-@if (isMealModalOpen) {
-  <app-meal-modal
-    [meal]="selectedMeal!"
-    (saved)="handleSave($event)"
-    (closed)="closeMealModal()">
-  </app-meal-modal>
 }
+  
+  <hr class="my-4" />
+  <!-- Mobile print buttons above grocery list -->
+  @if (!printTarget()) {
+    <div class="mobile-print-btn-group no-print">
+      <button class="btn btn-info print-btn" (click)="printFullPlan(false)">
+        Print Calendar
+      </button>
+      <button class="btn btn-primary print-btn" (click)="printFullPlan(true)">
+        Print All
+      </button>
+      @if(selectedMeals().length > 0) {
+        <button class="btn btn-warning print-btn" (click)="printSelectedRecipes()">
+          Print Selected Recipes
+        </button>
+      }
+    </div>
+  }
+  @if (!printTarget() || printTarget() === 'grocery') {
+    <div class="no-print">
+      <h4>Grocery List</h4>
+      <div class="grocery-toggle-row">
+        <label class="grocery-toggle-label" for="grocery-amount-toggle">Show measurements?</label>
+        <input id="grocery-amount-toggle" type="checkbox"
+          [checked]="showIngredientAmounts()"
+          (change)="showIngredientAmounts.set($any($event.target).checked); buildGroceryList();"
+          class="grocery-toggle-checkbox"
+        />
+      </div>
+      <p class="grocery-list-info">Click on the list to edit it manually.</p>
+      @if (!editingGroceries()) {
+        <div class="grocery-display print-grocery" (click)="editingGroceries.set(true)">
+          @for (item of groceryList(); track $index) {
+            <div>{{ item }}</div>
+          }
+        </div>
+      } @else {
+        <textarea
+          class="form-control grocery-textarea"
+          [value]="groceryList().join('\n')"
+          (blur)="saveGroceries($event)"
+        ></textarea>
+      }
+    </div>
+  }
+
+  @if(isMealModalOpen){
+    <app-meal-modal
+      [meal]="selectedMeal!"
+      (saved)="handleSave($event)"
+      (closed)="closeMealModal()">
+    </app-meal-modal>
+  }
